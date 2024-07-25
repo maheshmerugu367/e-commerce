@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AdminAuthController;
+use App\Http\Controllers\Api\Admin\CatgoryController;
 use App\Http\Controllers\UserAuthController;
 
 /*
@@ -29,6 +30,8 @@ Route::prefix('admin')->group(function () {
 
 Route::middleware('admin.auth')->prefix('admin')->group(function () {
     Route::get('dashboard', [AdminAuthController::class, 'dashboard']);
+    Route::post('category/create', [CatgoryController::class, 'store']);
+
 
 
 });
