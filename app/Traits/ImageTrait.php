@@ -65,4 +65,6 @@ trait ImageTrait
          // Generate the full URL including the domain
          return url('storage/' . $storagePath);
      }
+
+     
 }

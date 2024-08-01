@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
                 $table->id();
-                $table->string('title')->unique(); // Ensuring title is unique
+                $table->string('title'); // Ensuring title is unique
                 $table->string('app_icon');
                 $table->string('menu_image');
                 $table->string('app_main_image');

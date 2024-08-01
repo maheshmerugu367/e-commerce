@@ -10,7 +10,9 @@ trait camelCaseTrait
      * @param array $array
      * @return array
      */
-    public function arrayKeysToCamelCase($array)
+   
+
+     public function arrayKeysToCamelCase($array)
     {
         $camelCaseArray = [];
         foreach ($array as $key => $value) {
@@ -20,6 +22,21 @@ trait camelCaseTrait
             }
             $camelCaseArray[$camelCaseKey] = $value;
         }
+        return $camelCaseArray;
+    }
+
+    public function arrayKeysToCamelCaseCollection($array)
+    {
+        $camelCaseArray = [];
+
+        foreach ($array as $key => $value) {
+            $camelCaseKey = lcfirst(str_replace(' ', '', ucwords(str_replace('_', ' ', $key))));
+            if (is_array($value) || is_object($value)) {
+                $value = $this->arrayKeysToCamelCaseCollection((array) $value);
+            }
+            $camelCaseArray[$camelCaseKey] = $value;
+        }
+
         return $camelCaseArray;
     }
 }

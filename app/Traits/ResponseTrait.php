@@ -18,25 +18,27 @@ trait ResponseTrait
      * @param  int  $statusCode
      * @return JsonResponse
      */
-    public function successResponse($success = null, $message = null, $statusCode = null,$errors=[]): JsonResponse
+    public function successResponse($success = null, $message = null, $statusCode = null,$errors=[],$data=[]): JsonResponse
     {
         $success = $success ?? true;
-        $message = $message ?? ResponseConstants::DEFAULT_FAILURE_MESSAGE;
-        $statusCode = $statusCode ?? ResponseConstants::DEFAULT_FAILURE_STATUS_CODE;
+        $message = $message ?? ResponseConstants::FAILURE_MESSAGE;
+        $statusCode = $statusCode ?? ResponseConstants::FAILURE_STATUS_CODE;
+        $data=$data;
     
         return response()->json([
             'status' => $success,
             'message' => $message,
             'errors'=>$errors,
-            'statusCode'=>$statusCode
+            'statusCode'=>$statusCode,
+            'data'=>$data,
         ]);
     }
 
     public function failureResponse($success = null, $message = null, $statusCode = null,$errors=[]): JsonResponse
     {
         $success = $success ?? false;
-        $message = $message ?? ResponseConstants::DEFAULT_FAILURE_MESSAGE;
-        $statusCode = $statusCode ?? ResponseConstants::DEFAULT_FAILURE_STATUS_CODE;
+        $message = $message ?? ResponseConstants::FAILURE_MESSAGE;
+        $statusCode = $statusCode ?? ResponseConstants::FAILURE_STATUS_CODE;
     
         return response()->json([
             'status' => $success,
