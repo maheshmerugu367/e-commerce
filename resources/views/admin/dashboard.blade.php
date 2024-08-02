@@ -43,14 +43,17 @@
 
             <div class="main-panel">
 
-                @yield('content')
-
+            @yield('content')
+               
             </div>
 
             @include('admin.components.footer')
 
 
+
+
         </div>
+
 
     </div>
 

@@ -15,11 +15,10 @@ return new class extends Migration
                 $table->id();
                 $table->string('title'); // Ensuring title is unique
                 $table->string('app_icon');
+                $table->string('web_icon');
                 $table->string('menu_image');
-                $table->string('app_main_image');
                 $table->string('priority');
-                $table->Integer('status')->comment('Status: 1 for active, 2 for inactive');
-                $table->Integer('parent_id')->default(0);
+                $table->Integer('status')->comment('Status: 1 for active, 0 for inactive')->default(0);
                 $table->Integer('trash')->default(0);
                 $table->timestamps();
             

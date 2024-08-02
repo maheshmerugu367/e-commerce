@@ -4,7 +4,7 @@
 @section('content')
 
     <div class="page-header">
-        <h4 class=""> Menu </h4> <a href="categories_menu.php" class=" "> <label class="badge badge-info"><i class="mdi mdi-apps"></i> Manage</label></a>
+        <h4 class=""> Categories </h4> <a href="categories_menu.php" class=" "> <label class="badge badge-info"><i class="mdi mdi-apps"></i> Manage</label></a>
     </div>
     <div class="content-wrapper">
         <div class="row">
@@ -15,13 +15,13 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        <label>Menu Title<span class="text-danger">*</span></label>
+                                        <label>Category Title<span class="text-danger">*</span></label>
                                         <input type="text" class="form-control form-control-lg" placeholder="Enter Menu Title" aria-label="Title">
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        <label>Icon</label>
+                                        <label>App Icon</label>
                                         <input type="file" name="file" id="file" class="input-file">
                                         <label for="file" class="btn btn-tertiary js-labelFile">
                                             <i class="i mdi mdi-arrow-up-bold-circle "></i>
@@ -31,7 +31,7 @@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        <label>Image </label>
+                                        <label>web Icon </label>
                                         <input type="file" name="file" id="file" class="input-file">
                                         <label for="file" class="btn btn-tertiary js-labelFile">
                                             <i class="i mdi mdi-arrow-up-bold-circle "></i>
