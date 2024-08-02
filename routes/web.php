@@ -2,6 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\UserAuthController;
+
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -21,4 +24,16 @@ use Illuminate\Support\Facades\Log;
 Route::get('/test-log', function () {
     Log::channel('db')->info('Your message');
     return 'Log created';
+});
+
+
+use App\Http\Controllers\Admin\AuthController as AdminAuthController;
+use App\Http\Controllers\Admin\AdminController;
+
+Route::get('admin/login', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');
+Route::post('admin/login', [AdminAuthController::class, 'login']);
+Route::post('admin/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
+
+Route::middleware(['admin.auth:web'])->group(function () {
+    Route::get('admin/dashboard', [AdminAuthController::class, 'dashboard'])->name('admin.dashboard');
 });
