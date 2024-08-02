@@ -1,6 +1,7 @@
 <!-- resources/views/admin/admin.blade.php -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -32,26 +33,29 @@
 <script src="{{ asset('assets/js/todolist.js') }}"></script>
 
 <body>
-    <div class="wrapper">
-        <!-- Sidebar -->
-        @include('admin.components.sidebar')
+    <div class="container-scroller">
 
-        <!-- Page Content -->
-        <div id="content">
-            <!-- Header -->
-            @include('admin.components.header')
+        @include('admin.components.header')
 
-            <!-- Main Content -->
-            <div class="main-content">
+        <div class="container-fluid page-body-wrapper">
+
+            @include('admin.components.sidebar')
+
+            <div class="main-panel">
+
                 @yield('content')
+
             </div>
 
-            <!-- Footer -->
             @include('admin.components.footer')
+
+
         </div>
+
     </div>
 
     <script src="{{ asset('js/admin.js') }}"></script>
     @yield('scripts')
 </body>
+
 </html>

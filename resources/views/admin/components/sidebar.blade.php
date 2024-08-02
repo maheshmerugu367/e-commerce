@@ -8,8 +8,7 @@
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link collapsed" data-bs-toggle="collapse" href="#ui-basics" aria-expanded="false"
-        aria-controls="ui-basics">
+      <a class="nav-link collapsed" data-bs-toggle="collapse" href="#ui-basics" aria-expanded="false" aria-controls="ui-basics">
         <span class="menu-title"> <i class="mdi mdi-database f2"></i> &nbsp; Categories</span>
         <i class="mdi mdi-database menu-icon f1"></i> <i class="menu-arrow"></i>
       </a>
@@ -61,7 +60,7 @@
     <li class="nav-item">
       <a class="nav-link" href="#">
         <span class="menu-title"> <i class="mdi  mdi-email  menu-icon f2"></i> &nbsp; Messages</span>
-        </span>
+        
         <i class="mdi  mdi-email  menu-icon f1"></i>
       </a>
     </li>
@@ -86,4 +85,3 @@
     </li>
   </ul>
 </nav>
-<!-- partial -->
