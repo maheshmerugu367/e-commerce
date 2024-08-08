@@ -14,7 +14,7 @@
       </a>
       <div class="collapse" id="ui-basics" style="">
         <ul class="nav flex-column sub-menu">
-          <li class="nav-item"> <a class="nav-link" href="categories_menu.php">Menu</a></li>
+          <li class="nav-item"> <a class="nav-link" href="{{route('admin.category.create')}}">Add Category</a></li>
           <li class="nav-item"> <a class="nav-link" href="categories_submenu.php">Sub Menu</a></li>
           <li class="nav-item"> <a class="nav-link" href="list_submenu.php">List Sub Menu</a></li>
         </ul>
@@ -79,9 +79,30 @@
 
     <li class="nav-item">
       <a class="nav-link" href="#">
-        <span class="menu-title"> <i class="mdi mdi-power menu-icon f2"></i> &nbsp; Logout</span>
-        <i class="mdi mdi-power menu-icon f1"></i>
+      <span class="menu-title logout-button" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+            <i class="mdi mdi-power menu-icon f2"></i> &nbsp; Logout
+        </span>
+        
+        <!-- Hidden Logout Form -->
+        <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
+            @csrf
+        </form>        <i class="mdi mdi-power menu-icon f1"></i>
+
+        <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
+    @csrf
+</form>
+
+
       </a>
     </li>
   </ul>
 </nav>
+
+<script>
+        // jQuery to toggle sidebar-icon-only class on click
+        $(document).ready(function() {
+            $('.mdi-menu').on('click', function() {
+                $('body').toggleClass('sidebar-icon-only');
+            });
+        });
+    </script>

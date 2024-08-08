@@ -15,12 +15,31 @@
 
       <li class="nav-item dropdown">
         <a class="nav-link count-indicator dropdown-toggle" id="messageDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-          <i class="mdi mdi-account me-2"></i> Akeeb Shaik
+          <i class="mdi mdi-account me-2"></i> @if(Auth::guard('admin')->check())
+            {{ Auth::guard('admin')->user()->name }}
+        @else
+            Guest
+        @endif
         </a>
         <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="messageDropdown">
           <h6 class="p-2 mb-0"></h6>
-          <h6 class="p-2 mb-0"><a href=""> <i class="mdi mdi-account me-2"></i> Login</a></h6>
-          <h6 class="p-2 mb-0"><a href=""> <i class="mdi mdi-power   me-2"></i>Logout</a></h6>
+          <h6 class="p-2 mb-0">
+
+             
+        <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
+    @csrf
+</form>
+
+
+            <a href="{{ route('admin.logout') }}" 
+   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+   <i class="mdi mdi-power   me-2"></i> Logout
+</a>
+        
+        </h6>
+
+       
+
 
       </div></li>
     </ul>
@@ -29,3 +48,4 @@
     </button>
   </div>
 </nav>
+
