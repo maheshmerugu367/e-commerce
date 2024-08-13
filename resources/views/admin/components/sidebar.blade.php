@@ -14,9 +14,11 @@
       </a>
       <div class="collapse" id="ui-basics" style="">
         <ul class="nav flex-column sub-menu">
-          <li class="nav-item"> <a class="nav-link" href="{{route('admin.category.create')}}">Add Category</a></li>
-          <li class="nav-item"> <a class="nav-link" href="categories_submenu.php">Sub Menu</a></li>
-          <li class="nav-item"> <a class="nav-link" href="list_submenu.php">List Sub Menu</a></li>
+
+          <li class="nav-item"> <a class="nav-link" href="{{route('admin.category.index')}}">All Categories</a></li>
+          <li class="nav-item"> <a class="nav-link" href="{{route('admin.subcategory.index')}}">All Sub Categories</a></li>
+          <li class="nav-item"> <a class="nav-link" href="{{route('admin.list.subcategories.index')}}">List Sub Categories</a></li>
+
         </ul>
       </div>
     </li>

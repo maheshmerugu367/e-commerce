@@ -15,9 +15,10 @@ use Illuminate\Support\Facades\Storage;
 
 
 use App\Models\Category;
+use App\Models\ListSubCategory;
+use App\Models\subCategory;
 
-
-class CategoryController extends Controller
+class ListsubCategoryController extends Controller
 {
 
     use ImageTrait;
@@ -27,18 +28,16 @@ class CategoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function CategoryCreate()
+    public function Create()
+
     {
-        return view('admin.category.add');
+
+        $categories=Category::all();
+        $sub_categories=subCategory::all();
+        return view('admin.listsubcategories.add',compact('categories','sub_categories'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+   
 
    
 
@@ -46,10 +45,14 @@ class CategoryController extends Controller
     {
         $search = $request->input('search');
         $status = $request->input('status');
-        $query = Category::query();
-            if ($search) {
+    
+        $query = ListSubCategory::query();
+    
+        if ($search) {
             $query->where('title', 'like', '%' . $search . '%');
         }
+
+    
         if ($status === 'all') {
             $query->whereIn('status', [0, 1, null]);
         } elseif ($status =="0") {
@@ -57,32 +60,38 @@ class CategoryController extends Controller
         } elseif ($status) {
             $query->where('status', $status);
         }
+    
         $all_categories = $query->latest()->paginate(10);
-            return view('admin.category.index', compact('all_categories', 'search', 'status'));
+    
+        return view('admin.listsubcategories.index', compact('all_categories', 'search', 'status'));
     }
     
 
     /**
      * Store a newly created resource in storage.
      */
+    
     public function store(Request $request)
     {
 
         $validator = Validator::make($request->all(), [
-            'title' => 'required|string|min:3|regex:/^[a-zA-Z\s]+$/',
-            'priority' => ['required', 'numeric', 'regex:/^\d{1,2}(\.\d{1,2})?$/'],
+            'title' => 'required|string|min:3',
+            'category_id'=>'required',
+            'sub_category_id'=>'required',
             'appIcon' => 'image|mimes:jpeg,png',
             'webIcon' => 'image|mimes:jpeg,png',
             'mainImage' => 'image|mimes:jpeg,png',
-            'seo_title'=>'string|max:60',
-            'seo_description'=>'string|max:500',
-            'seo_keywords'=>'string|max:50'
+            'status'=>'required',
+            'priority' => ['required', 'numeric', 'regex:/^\d{1,2}(\.\d{1,2})?$/'],
+           
 
         ]);
 
 
 
+
         if ($validator->fails()) {
+
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
@@ -91,20 +100,21 @@ class CategoryController extends Controller
 
 
         try {
-            $record_check = Category::where('title', $request->title)->first();
+            $record_check = ListSubCategory::where('title', $request->title)->first();
             if ($record_check) {
 
                 $errors = ['title' => ['Record Already Exists']];
-                return redirect()->back()->withErrors($errors)->withInput();
+                return redirect()->back()->withErrors($errors);
             } else {
-
 
                 if(isset($request->appIcon)){
                     $appIconPath = $this->compressAndStoreImagewithDimensions($request->file('appIcon'), 100, 100, true, 75);
 
                 }
 
+
                 if(isset($request->webIcon)){
+
                     $webIconPath = $this->compressAndStoreImagewithDimensions($request->file('webIcon'), 100, 100, true, 75);
 
                 }
@@ -115,7 +125,9 @@ class CategoryController extends Controller
                 }
 
 
-                $newData = Category::create([
+                $newData = ListSubCategory::create([
+                    'category_id'=>$request->category_id,
+                    'sub_category_id'=>$request->sub_category_id,
                     'title' => $request->title,
                     'app_icon' => $appIconPath ?? '',
                     'web_icon' => $webIconPath ?? '',
@@ -127,14 +139,14 @@ class CategoryController extends Controller
                 ]);
                 if ($newData) {
 
-                    return redirect()->back()->with('success', 'Category Created Successfully!');
+                    return redirect()->back()->with('success', 'List Sub Category Created Successfully!');
                 }
             }
         } catch (\Exception $e) {
             Log::error('An error occurred: ' . $e->getMessage());
 
             return response()->json([
-                'errors' => $$e->getMessage()
+                'errors' => $e->getMessage()
             ], 422);
         }
     }
@@ -152,8 +164,10 @@ class CategoryController extends Controller
      */
     public function edit(string $id)
     {
-        $category = Category::find($id);
-        return view('admin.category.edit', compact('category'));
+        $list_sub_category = ListSubCategory::find($id);
+        $sub_categories=subCategory::all();
+        $categories=Category::all();
+        return view('admin.listsubcategories.edit', compact('list_sub_category','categories','sub_categories'));
     }
 
     /**
@@ -164,12 +178,12 @@ class CategoryController extends Controller
 
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|min:3|regex:/^[a-zA-Z\s]+$/',
-            'priority' => ['required', 'numeric', 'regex:/^\d{1,2}(\.\d{1,2})?$/'],
             'appIcon' => 'image|mimes:jpeg,png',
             'webIcon' => 'image|mimes:jpeg,png',
             'mainImage' => 'image|mimes:jpeg,png',
-            ''
-
+            'priority' => ['required', 'numeric', 'regex:/^\d{1,2}(\.\d{1,2})?$/'],
+            'category_id'=>'required',
+            'sub_category_id'=>'required',
         ]);
 
         if ($validator->fails()) {
@@ -179,7 +193,7 @@ class CategoryController extends Controller
             try {
 
                 $categoryId = $request->id;
-                $category = Category::find($categoryId);
+                $category = ListSubCategory::find($categoryId);
 
 
                 if ($request->file('appIcon')) {
@@ -213,6 +227,7 @@ class CategoryController extends Controller
                 if ($category) {
                     $updated =   $category->update([
                         'title' => $request->title,
+                        'category_id'=>$request->category_id,
                         'app_icon' => $appIconPath,
                         'web_icon' => $webIconPath,
                         'main_image' => $mainImagePath,
@@ -228,7 +243,7 @@ class CategoryController extends Controller
 
                 if ($updated) {
 
-                    return redirect()->back()->with('success', 'Category Updated Successfully!');
+                    return redirect()->back()->with('success', 'List Sub Category Updated Successfully!');
                 }
             } catch (\Exception $e) {
                 Log::error('An error occurred: ' . $e->getMessage());
@@ -242,7 +257,7 @@ class CategoryController extends Controller
 
     public function appIconDelete($id){
 
-        $category = Category::findOrFail($id);
+        $category = ListSubCategory::findOrFail($id);
 
         // Delete the image file from storage
         if ($category->app_icon) {
@@ -260,7 +275,7 @@ class CategoryController extends Controller
 
     public function webIconDelete($id){
 
-        $category = Category::findOrFail($id);
+        $category = ListSubCategory::findOrFail($id);
 
         // Delete the image file from storage
         if ($category->web_icon) {
@@ -271,14 +286,14 @@ class CategoryController extends Controller
         $category->web_icon = null;
         $category->save();
     
-        return redirect()->back()->with('success', 'App icon deleted successfully.');
+        return redirect()->back()->with('success', 'Web icon deleted successfully.');
 
 
     }
 
     public function mainIconDelete($id){
 
-        $category = Category::findOrFail($id);
+        $category = ListSubCategory::findOrFail($id);
 
         // Delete the image file from storage
         if ($category->main_image) {
@@ -294,98 +309,98 @@ class CategoryController extends Controller
 
     }
 
-    public function deleteSelectedCategories(Request $request)
+    public function deleteSelectedsubCategories(Request $request)
 {
     $ids = $request->input('ids');
 
     if ($ids) {
         // Deleting the categories
-        Category::whereIn('id', $ids)->delete();
+        ListSubCategory::whereIn('id', $ids)->delete();
 
-        return response()->json(['success' => 'Categories deleted successfully.']);
+        return response()->json(['success' => 'List Sub Categories deleted successfully.']);
     }
 
     return response()->json(['error' => 'No categories selected.']);
 }
 
-public function trashSelectedCategories(Request $request)
+public function trashSelectedsubCategories(Request $request)
 {
     $ids = $request->input('ids');
 
     if ($ids) {
         // Deleting the categories
-        Category::whereIn('id', $ids)->update([
+        ListSubCategory::whereIn('id', $ids)->update([
             'trash'=>'1'
         ]);
 
-        return response()->json(['success' => 'Categories Moved To Trash Successfully.']);
+        return response()->json(['success' => 'List Sub Categories Moved To Trash Successfully.']);
     }
 
     return response()->json(['error' => 'No categories selected.']);
 }
 
 
-public function activeSelectedCategories(Request $request)
+public function activeSelectedsubCategories(Request $request)
 {
     $ids = $request->input('ids');
 
     if ($ids) {
         // Deleting the categories
-        Category::whereIn('id', $ids)->update([
+        ListSubCategory::whereIn('id', $ids)->update([
             'status'=>'1'
         ]);
 
-        return response()->json(['success' => 'Categories Status Changed Successfully.']);
+        return response()->json(['success' => 'List Sub Categories Status Changed Successfully.']);
     }
 
     return response()->json(['error' => 'No categories selected.']);
 }
 
 
-public function inactiveSelectedCategories(Request $request)
+public function inactiveSelectedsubCategories(Request $request)
 {
     $ids = $request->input('ids');
 
     if ($ids) {
         // Deleting the categories
-        Category::whereIn('id', $ids)->update([
+        ListSubCategory::whereIn('id', $ids)->update([
             'status'=>'0'
         ]);
 
-        return response()->json(['success' => 'Categories Status Changed Successfully.']);
+        return response()->json(['success' => 'List Sub Categories Status Changed Successfully.']);
     }
 
     return response()->json(['error' => 'No categories selected.']);
 }
 
-public function frontactiveSelectedCategories(Request $request)
+public function frontactiveSelectedsubCategories(Request $request)
 {
     $ids = $request->input('ids');
 
     if ($ids) {
         // Deleting the categories
-        Category::whereIn('id', $ids)->update([
+        ListSubCategory::whereIn('id', $ids)->update([
             'front_status'=>'1'
         ]);
 
-        return response()->json(['success' => 'Categories frontend  Status Changed Successfully.']);
+        return response()->json(['success' => 'List Sub Categories frontend  Status Changed Successfully.']);
     }
 
     return response()->json(['error' => 'No categories selected.']);
 }
 
 
-public function frontinactiveSelectedCategories(Request $request)
+public function frontinactiveSelectedsubCategories(Request $request)
 {
     $ids = $request->input('ids');
 
     if ($ids) {
         // Deleting the categories
-        Category::whereIn('id', $ids)->update([
+        ListSubCategory::whereIn('id', $ids)->update([
             'front_status'=>'0'
         ]);
 
-        return response()->json(['success' => 'Categories frontend  Status Changed Successfully.']);
+        return response()->json(['success' => 'List Sub Categories frontend  Status Changed Successfully.']);
     }
 
     return response()->json(['error' => 'No categories selected.']);

@@ -14,12 +14,18 @@ return new class extends Migration
         Schema::create('categories', function (Blueprint $table) {
                 $table->id();
                 $table->string('title'); // Ensuring title is unique
-                $table->string('app_icon');
-                $table->string('web_icon');
-                $table->string('main_image');
+                $table->string('app_icon')->nullable();
+                $table->string('web_icon')->nullable();
+                $table->string('main_image')->nullable();
                 $table->string('priority');
+                $table->string('front_status')->nullable();
                 $table->Integer('status')->comment('Status: 1 for active, 0 for inactive')->default(1);
                 $table->Integer('trash')->default(1);
+                $table->string('seo_title')->nullable();
+                $table->string('seo_description')->nullable();
+                $table->string('seo_keywords')->nullable();
+
+
                 $table->timestamps();
             
         });

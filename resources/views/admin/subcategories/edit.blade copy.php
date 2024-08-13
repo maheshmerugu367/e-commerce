@@ -1,8 +1,6 @@
 @extends('admin.dashboard')
 @section('content')
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
 <style>
     .hidden {
         display: none;
@@ -24,8 +22,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
 <div class="page-header">
-    <h4>Edit Category</h4>
-    <a href="{{route('admin.category.index')}}" class="">
+    <h4>Edit Sub Category</h4>
+    <a href="{{route('admin.subcategory.index')}}" class="">
         <label class="badge badge-info">
             <i class="mdi mdi-apps"></i> Manage
         </label>
@@ -45,16 +43,50 @@
 
                     <div id="errorContainer" class="alert alert-danger" style="display: none;"></div>
 
-                    <form id="uploadForm" action="{{ route('admin.category.update') }}" class="form-sample" enctype="multipart/form-data" method="POST">
+                    <form id="uploadForm" action="{{ route('admin.subcategory.update') }}" class="form-sample" enctype="multipart/form-data" method="POST">
                         @csrf
                         <div class="row">
+
+
+
+
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Category Title<span class="text-danger">*</span></label>
+
+
+                                    <select class="form-select" name="category_id">
+                                        <option value="">Select</option>
+
+                                        @foreach($categories as $category)
+
+
+                                        <option value="{{ $category->id }}" {{ $subcategory->category_id == $category->id ? 'selected' : '' }}>
+                                            {{ $category->title }}
+                                        </option>
+                                        @endforeach
+
+                                    </select>
+
+
+
+                                    @if ($errors->has('category_id'))
+                                    <div class="error-message">
+                                        @foreach ($errors->get('category_id') as $error)
+                                        <p>{{ $error }}</p>
+                                        @endforeach
+                                    </div>
+                                    @endif
+                                </div>
+                            </div>
+
                             <div class="col-md-3">
                                 <div class="form-group">
 
-                                    <input type="hidden" name="id" class="form-control form-control-lg" value="{{ $category->id }}" placeholder="Enter Category Title" aria-label="Title">
+                                    <input type="hidden" name="id" class="form-control form-control-lg" value="{{ $subcategory->id }}" placeholder="Enter Category Title" aria-label="Title">
 
-                                    <label>Category Title<span class="text-danger">*</span></label>
-                                    <input type="text" name="title" class="form-control form-control-lg" value="{{ old('title', $category->title) }}" placeholder="Enter Category Title" aria-label="Title">
+                                    <label>Sub Category Title<span class="text-danger">*</span></label>
+                                    <input type="text" name="title" class="form-control form-control-lg" value="{{ $subcategory->title }}" placeholder="Enter Category Title" aria-label="Title">
                                     @if ($errors->has('title'))
                                     <div class="error-message">
                                         @foreach ($errors->get('title') as $error)
@@ -66,22 +98,19 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label>App Icon (100x100)</label>
-                                    <label for="appIconFile" class="btn btn-primary btn-sm">Choose Image</label>
-
-                                    <input type="file" name="appIcon" id="appIconFile" style="display: none;">
-                                    @if ($category->app_icon)
+                                    <label>App Icon (100*100)</label>
+                                    <input type="file" name="appIcon" id="appIconFile">
+                                    @if ($subcategory->app_icon)
                                     <div class="mt-2">
-                                        <img src="{{ asset('storage/'.$category->app_icon) }}" alt="App Icon Preview" style="width:80px;height:80px;" class="image-preview">
-
-                                        <button type="button"
-                                            class="btn btn-danger"
-                                            onclick="confirmDeleteAppIcon('{{ route('admin.category.delete.app.icon', ['id' => $category->id]) }}')">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
+                                        <img src="{{ asset('storage/'.$subcategory->app_icon) }}" alt="App Icon Preview" class="image-preview">
                                     </div>
 
-
+                                    <div class="mt-2">
+                                        <label for="delete_app_icon">
+                                            <a href="{{ route('admin.subcategory.delete.app.icon', ['id' => $subcategory->id]) }}" id="delete_app_icon" class="btn btn-danger">
+                                                Delete App Icon
+                                            </a> </label>
+                                    </div>
 
                                     @else
                                     <div class="mt-2 hidden">
@@ -97,23 +126,17 @@
 
 
                                 <div class="form-group">
-                                    <label>Web Icon (100x100)</label>
-                                    <label for="webIconFile" class="btn btn-primary btn-sm">Choose Image</label>
-
-                                    <input type="file" name="webIcon" id="webIconFile" style="display :none;">
-                                    @if ($category->web_icon)
+                                    <label>Web Icon (100*100)</label>
+                                    <input type="file" name="webIcon" id="webIconFile">
+                                    @if ($subcategory->web_icon)
                                     <div class="mt-2">
-                                        <img src="{{ asset('storage/'.$category->web_icon) }}" alt="Web Icon Preview" class="image-preview" style="width:80px;height:80px;">
-
-
-                                    
-                                            <button type="button"
-                                            class="btn btn-danger"
-                                            onclick="confirmDeleteWebIcon('{{ route('admin.category.delete.web.icon', ['id' => $category->id]) }}')">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-
-                                        </a>
+                                        <img src="{{ asset('storage/'.$subcategory->web_icon) }}" alt="Web Icon Preview" class="image-preview">
+                                    </div>
+                                    <div class="mt-2">
+                                        <label for="delete_app_icon">
+                                            <a href="{{ route('admin.subcategory.delete.web.icon', ['id' => $subcategory->id]) }}" id="delete_app_icon" class="btn btn-danger">
+                                                Delete Web Icon
+                                            </a> </label>
                                     </div>
 
                                     @else
@@ -129,24 +152,19 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label>Main Image (100x100)</label>
-                                    <label for="mainImageFile" class="btn btn-primary btn-sm">Choose Image</label>
-
-                                    <input type="file" name="mainImage" id="mainImageFile" style="display:none;">
-                                    @if ($category->main_image)
+                                    <label>Main Image (100*100)</label>
+                                    <input type="file" name="mainImage" id="mainImageFile">
+                                    @if ($subcategory->main_image)
                                     <div class="mt-2">
-                                        <img src="{{ asset('storage/'.$category->main_image) }}" alt="Main Image Preview" class="image-preview" style="width:80px;height:80px;">
-                                       
-
-                                        <button type="button"
-                                            class="btn btn-danger"
-                                            onclick="confirmDeleteMainIcon('{{ route('admin.category.delete.main.icon', ['id' => $category->id]) }}')">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-
+                                        <img src="{{ asset('storage/'.$subcategory->main_image) }}" alt="Main Image Preview" class="image-preview">
                                     </div>
 
-
+                                    <div class="mt-2">
+                                        <label for="delete_app_icon">
+                                            <a href="{{ route('admin.subcategory.delete.main.icon', ['id' => $subcategory->id]) }}" id="delete_app_icon" class="btn btn-danger">
+                                                Delete Main Icon
+                                            </a> </label>
+                                    </div>
                                     @else
                                     <div class="mt-2 hidden">
                                         <img class="image-preview hidden">
@@ -157,28 +175,19 @@
                                     </div>
                                 </div>
                             </div>
-
-
-                         
-
-
-
-                        </div>
-                        <div class="row">
-
-                        <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <label>Status<span class="text-danger">*</span></label>
                                     <select class="form-control" name="status">
-                                        <option value="0" {{ $category->status == 0 ? 'selected' : '' }}>InActive</option>
-                                        <option value="1" {{ $category->status == 1 ? 'selected' : '' }}>Active</option>
+                                        <option value="0" {{ $subcategory->status == 0 ? 'selected' : '' }}>InActive</option>
+                                        <option value="1" {{ $subcategory->status == 1 ? 'selected' : '' }}>Active</option>
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <label>Priority<span class="text-danger">*</span></label>
-                                    <input class="form-control" type="text" name="priority" value="{{ old('priority', $category->priority) }}"   />
+                                    <input class="form-control" type="text" name="priority" value="{{ $subcategory->priority }}" />
                                     @if ($errors->has('priority'))
                                     <div class="error-message">
                                         @foreach ($errors->get('priority') as $error)
@@ -192,36 +201,26 @@
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="seoTitle">SEO Title</label>
-                                    <input type="text" class="form-control" id="seoTitle" name="seo_title" value="{{$category->seo_title}}" placeholder="Enter SEO Title">
+                                    <input type="text" class="form-control" id="seoTitle" name="seo_title" value="{{$subcategory->seo_title}}" placeholder="Enter SEO Title">
                                 </div>
                             </div>
 
 
-
-                        </div>
-
-                        <div class="row">
-
-
-                        
-                      
-
-                          
-
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="seoDescription">SEO Description</label>
-                                    <textarea class="form-control" id="seoDescription" name="seo_description" placeholder="Enter SEO Description">{{$category->seo_description}}</textarea>
-                                </div>
-                            </div>
-
-
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="seoKeywords">SEO Keywords</label>
-                                    <textarea class="form-control" id="seoDescription" name="seo_keywords" placeholder="Enter SEO Description">{{$category->seo_keywords}}</textarea>
+                                    <input type="text" class="form-control" id="seoKeywords" name="seo_keywords" value="{{$subcategory->seo_keywords}}" placeholder="Enter SEO Keywords">
                                 </div>
                             </div>
+
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="seoDescription">SEO Description</label>
+                                    <textarea class="form-control" id="seoDescription" name="seo_description" placeholder="Enter SEO Description">{{$subcategory->seo_description}}</textarea>
+                                </div>
+                            </div>
+
+
 
                         </div>
 
@@ -229,7 +228,7 @@
                             <button type="submit" id="submitBtn" class="btn btn-gradient-success btn-fw">
                                 <i class="mdi mdi-arrow-right-bold-hexagon-outline"></i> UPDATE
                             </button>
-                            <a href="{{ route('admin.category.index') }}" class="btn btn-info">
+                            <a href="{{ route('admin.subcategory.index') }}" class="btn btn-info">
                                 <i class="mdi mdi-arrow-left-bold-circle"></i> BACK
                             </a>
                         </div>
@@ -360,131 +359,4 @@
             }
 
         });
-    </script>
-
-
-    <script>
-        document.getElementById('appIconFile').addEventListener('change', function() {
-            var file = this.files[0];
-            if (file) {
-                document.getElementById('fileName').textContent = file.name;
-                var reader = new FileReader();
-
-                reader.onload = function(e) {
-                    var imagePreview = document.getElementById('imagePreview');
-                    if (imagePreview) {
-                        imagePreview.src = e.target.result;
-                    } else {
-                        var imgElement = document.createElement('img');
-                        imgElement.src = e.target.result;
-                        imgElement.alt = 'App Icon Preview';
-                        imgElement.className = 'image-preview';
-                        document.querySelector('.form-group').appendChild(imgElement);
-                    }
-                };
-
-                reader.readAsDataURL(file);
-            }
-        });
-
-        // Initially hide "No file chosen" text if a file is already uploaded
-        document.getElementById('fileName').textContent = "{{ $category->app_icon ? '' : 'No file chosen' }}";
-    </script>
-
-
-    <script>
-        document.getElementById('webIconFile').addEventListener('change', function() {
-            var file = this.files[0];
-            if (file) {
-                document.getElementById('fileName').textContent = file.name;
-                var reader = new FileReader();
-
-                reader.onload = function(e) {
-                    var imagePreview = document.getElementById('imagePreview');
-                    if (imagePreview) {
-                        imagePreview.src = e.target.result;
-                    } else {
-                        var imgElement = document.createElement('img');
-                        imgElement.src = e.target.result;
-                        imgElement.alt = 'Web Icon Preview';
-                        imgElement.className = 'image-preview';
-                        document.querySelector('.form-group').appendChild(imgElement);
-                    }
-                };
-
-                reader.readAsDataURL(file);
-            }
-        });
-
-        // Initially hide "No file chosen" text if a file is already uploaded
-        document.getElementById('fileName').textContent = "{{ $category->app_icon ? '' : 'No file chosen' }}";
-    </script>
-
-
-    <script>
-        document.getElementById('mainImageFile').addEventListener('change', function() {
-            alert()
-            var file = this.files[0];
-            if (file) {
-                document.getElementById('fileName').textContent = file.name;
-                var reader = new FileReader();
-
-                reader.onload = function(e) {
-                    var imagePreview = document.getElementById('imagePreview');
-                    if (imagePreview) {
-                        imagePreview.src = e.target.result;
-                    } else {
-                        var imgElement = document.createElement('img');
-                        imgElement.src = e.target.result;
-                        imgElement.alt = 'Main Icon Preview';
-                        imgElement.className = 'image-preview';
-                        document.querySelector('.form-group').appendChild(imgElement);
-                    }
-                };
-
-                reader.readAsDataURL(file);
-            }
-        });
-
-        // Initially hide "No file chosen" text if a file is already uploaded
-        document.getElementById('fileName').textContent = "{{ $category->app_icon ? '' : 'No file chosen' }}";
-    </script>
-
-
-    <script>
-        function confirmDeleteAppIcon(url) {
-            // Display confirmation dialog
-            let userConfirmed = confirm("Are you sure you want to delete this app icon?");
-
-            if (userConfirmed) {
-                // Redirect to the delete URL
-                window.location.href = url;
-            }
-        }
-
-
-        function confirmDeleteWebIcon(url) {
-            // Display confirmation dialog
-            let userConfirmed = confirm("Are you sure you want to delete this Web icon?");
-
-            if (userConfirmed) {
-                // Redirect to the delete URL
-                window.location.href = url;
-            }
-        }
-
-
-
-        function confirmDeleteMainIcon(url) {
-            // Display confirmation dialog
-            let userConfirmed = confirm("Are you sure you want to delete this Main icon?");
-
-            if (userConfirmed) {
-                // Redirect to the delete URL
-                window.location.href = url;
-            }
-        }
-
-        
-
     </script>
